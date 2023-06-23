@@ -104,6 +104,56 @@ function App() {
   //------------------------------------------------------------------------------------------------
 
 
+  // working (Division)
+  const handleButtonDivision = async () => {
+    const result = await sendGetRequestForDivision();
+    console.log(result)
+    alert("result is: " + JSON.stringify(result))
+  };
+  const sendGetRequestForDivision = async () => {
+    const res = await axios.get(`http://cpsc304nodeenv-env.eba-cpseb6s4.ca-central-1.elasticbeanstalk.com/Division
+    `);
+    return res.data
+  }
+
+  
+  // working (Aggregation Having)
+  const handleButtonAggregationHaving = async () => {
+    const result = await sendGetRequestForAggregationHaving();
+    console.log(result)
+    alert("result is: " + JSON.stringify(result))
+  };
+  const sendGetRequestForAggregationHaving = async () => {
+    const res = await axios.get(`http://cpsc304nodeenv-env.eba-cpseb6s4.ca-central-1.elasticbeanstalk.com/Aggregation_with_HAVING
+    `);
+    return res.data
+  }
+
+  
+  // working (Youngest Coach)
+  const handleButtonYoungestCoach = async () => {
+    const result = await sendGetRequestForYoungestCoach();
+    console.log(result)
+    alert("result is: " + JSON.stringify(result))
+  };
+  const sendGetRequestForYoungestCoach = async () => {
+    const res = await axios.get(`http://cpsc304nodeenv-env.eba-cpseb6s4.ca-central-1.elasticbeanstalk.com/Nested_Aggregation_with_GROUP_BY`);
+    return res.data
+  }
+
+
+  // working (Average Salary)
+  const handleButtonAverageSalary = async () => {
+    const result = await sendGetRequestForAverageSalary();
+    console.log(result)
+    alert("result is: " + JSON.stringify(result))
+  };
+  const sendGetRequestForAverageSalary = async () => {
+    const res = await axios.get(`http://cpsc304nodeenv-env.eba-cpseb6s4.ca-central-1.elasticbeanstalk.com/Aggregation_with_GROUP_BY`);
+    return res.data
+  }
+
+
   // working (Select)
   const handleSubmitSelect = async (event) => {
     event.preventDefault();
@@ -163,6 +213,10 @@ function App() {
   // working for (UPDATE)
   const handleSubmitUpdate = async (event) => {
     event.preventDefault();
+    if (containsOnlyNumbers(formDataVenue.price) !== true || formDataVenue.price < 0){
+      alert("You must entered a valid price");
+      return;
+    }
     alert(`Input message: Venue: ${formDataVenue.venue}, Price: ${formDataVenue.price}`);
     const result = await sendGetRequestForUpdate(formDataVenue.venue, formDataVenue.price);
     console.log(result)
@@ -192,9 +246,18 @@ function App() {
   const handlePlayer = async (event) => {
     event.preventDefault();
     const playerType = formDataPlayer.playerType;
-    // alert(formDataPlayer.playerType + formDataPlayer.teamName + formDataPlayer.playerName + formDataPlayer.jerseyNumber + formDataPlayer.skillPoint + formDataPlayer.salary);
-
-
+    if (containsOnlyNumbers(formDataPlayer.salary) !== true || formDataPlayer.salary < 0) {
+      alert("You must entered a valid salary");
+      return;
+    }
+    if (containsOnlyNumbers(formDataPlayer.skillPoint) !== true || formDataPlayer.skillPoint < 1 || formDataPlayer.skillPoint > 100) {
+      alert("You must entered a valid skill point");
+      return;
+    }
+    if (containsOnlyNumbers(formDataPlayer.jerseyNumber) !== true || formDataPlayer.jerseyNumber < 0) {
+      alert("You must entered a valid jersey number");
+      return;
+    }
     if (playerType === "Goalkeeper") {
       const result = await sendGetRequestForGoalkeeper(formDataPlayer.teamName, formDataPlayer.playerName, formDataPlayer.jerseyNumber, formDataPlayer.skillPoint, formDataPlayer.salary)
       alert(`Goalkeeper Player: ${formDataPlayer.playerName} is added to Team ${formDataPlayer.teamName}`)
@@ -217,6 +280,7 @@ function App() {
       alert(`Return message: ${result["message"]}`)
     } else {
       alert("You have entered a wrong player type: " + playerType);
+      return
     }
   }
   const sendGetRequestForGoalkeeper = async (teamName, playerName, jerseyNumber, skillPoint, salary) => {
@@ -240,8 +304,10 @@ function App() {
 
 
   //------------------------------------------------------------------------------------------------
-
-
+  // Check if string contains only numbers
+  function containsOnlyNumbers(str) {
+    return /^\d+$/.test(str);
+  }
 
 
 
@@ -358,8 +424,27 @@ function App() {
         <input type="text" id="testing" name="testing" value={formDataTesting.testing} onChange={handleChangeTesting} />
         <button type="submit">TESTING ONLY (Check assets)</button>
       </form>
+      <br />
+      <br />
+
+      <button onClick={handleButtonAverageSalary}>Show average salary for referee</button>
+      <br />
+      <br />
+
+    
+      <button onClick={handleButtonYoungestCoach}>Show the youngest coach</button>
+      <br />
+      <br />
 
 
+      <button onClick={handleButtonAggregationHaving}>Aggregation with HAVING - Output: a table of team names along with the corresponding maximum salary of the goalkeepers, limited to teams with a maximum salary higher than 50000</button>
+      <br />
+      <br />
+
+
+      <button onClick={handleButtonDivision}>Find the name of all sponsors that supports all teams</button>
+      <br />
+      <br />
 
 
 
